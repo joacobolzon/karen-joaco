@@ -17,6 +17,10 @@ body {
   padding: 20px;
   overflow: hidden;
 }
+h1 {
+  color: rgba(221, 61, 173, 0.9);
+  text-shadow: 2px 2px 4px rgba(81, 13, 13, 0.3);
+}
 .container {
   position: relative;
   height: 80vh;
@@ -44,6 +48,9 @@ body {
 .countdown {
   font-size: 2em;
   margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(81, 13, 13, 0.3);
+  text-decoration: dotted underline;
+  color: rgba(221, 61, 173, 0.9);
 }
 .message {
   display: none;
