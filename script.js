@@ -52,9 +52,89 @@ document.addEventListener("DOMContentLoaded", () => {
       remainingSeconds--;
     }
   }
+  function generateCalendar() {
+    const calendarEl = document.getElementById("calendar");
+    const months = [];
+    let current = new Date(startDate);
+
+    while (current <= targetDate) {
+      const year = current.getFullYear();
+      const month = current.getMonth();
+      const monthName =
+        current.toLocaleString("default", { month: "long" }) + " " + year;
+
+      if (!months.some((m) => m.year === year && m.month === month)) {
+        months.push({ year, month, name: monthName });
+      }
+
+      current.setMonth(current.getMonth() + 1);
+    }
+
+    months.forEach(({ year, month, name }) => {
+      const monthEl = document.createElement("div");
+      monthEl.className = "month";
+
+      const title = document.createElement("h3");
+      title.textContent = name;
+      monthEl.appendChild(title);
+
+      const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const weekdaysEl = document.createElement("div");
+      weekdaysEl.className = "weekdays";
+      weekdays.forEach((day) => {
+        const dayEl = document.createElement("div");
+        dayEl.textContent = day;
+        weekdaysEl.appendChild(dayEl);
+      });
+      monthEl.appendChild(weekdaysEl);
+
+      const daysEl = document.createElement("div");
+      daysEl.className = "days";
+
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const startDayOfWeek = firstDay.getDay();
+
+      // Empty cells for days before the first day
+      for (let i = 0; i < startDayOfWeek; i++) {
+        const emptyEl = document.createElement("div");
+        emptyEl.className = "day empty";
+        daysEl.appendChild(emptyEl);
+      }
+
+      // Days of the month
+      for (let day = 1; day <= lastDay.getDate(); day++) {
+        const dayEl = document.createElement("div");
+        dayEl.className = "day";
+        dayEl.textContent = day;
+
+        const currentDay = new Date(year, month, day);
+        if (currentDay < now && currentDay >= startDate) {
+          dayEl.classList.add("passed");
+        } else if (currentDay.toDateString() === now.toDateString()) {
+          dayEl.classList.add("today");
+        } else if (currentDay.toDateString() === targetDate.toDateString()) {
+          dayEl.classList.add("target");
+        }
+
+        // Make interactive: toggle "passed" on click
+        dayEl.addEventListener("click", () => {
+          if (currentDay >= startDate && currentDay <= targetDate) {
+            dayEl.classList.toggle("passed");
+          }
+        });
+
+        daysEl.appendChild(dayEl);
+      }
+
+      monthEl.appendChild(daysEl);
+      calendarEl.appendChild(monthEl);
+    });
+  }
 
   // Initial call
   updateCountdown();
+  generateCalendar();
 
   // Update every second
   interval = setInterval(updateCountdown, 1000);
