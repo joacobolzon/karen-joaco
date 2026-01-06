@@ -1,0 +1,52 @@
+html {
+  --s: 45px; /* control the size*/
+  --c1: #f2aff3;
+  --c2: #d5f4fb;
+
+  --_g: 80%, var(--c1) 25.4%, #0000 26%;
+  background: radial-gradient(at 80% var(--_g)),
+    radial-gradient(at 20% var(--_g)),
+    conic-gradient(from -45deg at 50% 41%, var(--c1) 90deg, var(--c2) 0)
+      calc(var(--s) / 2) 0;
+  background-size: var(--s) var(--s);
+}
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+  overflow: hidden;
+}
+.container {
+  position: relative;
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.image {
+  position: absolute;
+  width: 100px; /* Initial size */
+  height: auto;
+  transition: all 1s ease; /* Smooth animation */
+  border-radius: 50%;
+}
+#image1 {
+  left: 10%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+#image2 {
+  right: 10%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.countdown {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+.message {
+  display: none;
+  font-size: 1.5em;
+  color: red;
+}
