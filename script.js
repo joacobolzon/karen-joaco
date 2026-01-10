@@ -50,6 +50,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     image1.style.width = `${currentSize}px`;
     image2.style.width = `${currentSize}px`;
+
+    const line = document.getElementById("love-line");
+    if (line) {
+      const rect1 = image1.getBoundingClientRect();
+      const rect2 = image2.getBoundingClientRect();
+      const containerRect = image1.parentElement.getBoundingClientRect();
+
+      const x1 = rect1.right - containerRect.left;
+      const x2 = rect2.left - containerRect.left;
+
+      line.style.left = `${x1}px`;
+      line.style.width = `${x2 - x1}px`;
+    }
   }
   function generateCalendar() {
     const calendarEl = document.getElementById("calendar");
