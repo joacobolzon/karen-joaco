@@ -110,6 +110,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const lastDay = new Date(year, month + 1, 0);
       const startDayOfWeek = firstDay.getDay();
 
+      // Adjust lastDay if this is the target month
+      let maxDay = lastDay.getDate();
+      if (
+        year === targetDate.getFullYear() &&
+        month === targetDate.getMonth()
+      ) {
+        maxDay = targetDate.getDate();
+      }
+
       // Empty cells for days before the first day
       for (let i = 0; i < startDayOfWeek; i++) {
         const emptyEl = document.createElement("div");
@@ -118,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Days of the month
-      for (let day = 1; day <= lastDay.getDate(); day++) {
+      for (let day = 1; day <= maxDay; day++) {
         const dayEl = document.createElement("div");
         dayEl.className = "day";
         dayEl.textContent = day;
