@@ -82,6 +82,9 @@ document.addEventListener("DOMContentLoaded", () => {
       current.setMonth(current.getMonth() + 1);
     }
 
+    // Load marked days from localStorage
+    let markedDays = JSON.parse(localStorage.getItem("markedDays") || "[]");
+
     months.forEach(({ year, month, name }) => {
       const monthEl = document.createElement("div");
       monthEl.className = "month";
@@ -121,20 +124,36 @@ document.addEventListener("DOMContentLoaded", () => {
         dayEl.textContent = day;
 
         const currentDay = new Date(year, month, day);
-        if (currentDay < now && currentDay >= startDate) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(
+          day
+        ).padStart(2, "0")}`;
+
+        // Add "passed" if marked
+        if (markedDays.includes(dateStr)) {
           dayEl.classList.add("passed");
-        } else if (currentDay.toDateString() === now.toDateString()) {
+        }
+
+        // Add special classes
+        if (currentDay.toDateString() === now.toDateString()) {
           dayEl.classList.add("today");
         } else if (currentDay.toDateString() === targetDate.toDateString()) {
           dayEl.classList.add("target");
         }
 
-        // Make interactive: toggle "passed" on click
-        dayEl.addEventListener("click", () => {
-          if (currentDay >= startDate && currentDay <= targetDate) {
+        // Only add click event if the day is between now and targetDate (inclusive)
+        if (currentDay >= now && currentDay <= targetDate) {
+          dayEl.addEventListener("click", () => {
             dayEl.classList.toggle("passed");
-          }
-        });
+            if (dayEl.classList.contains("passed")) {
+              if (!markedDays.includes(dateStr)) {
+                markedDays.push(dateStr);
+              }
+            } else {
+              markedDays = markedDays.filter((d) => d !== dateStr);
+            }
+            localStorage.setItem("markedDays", JSON.stringify(markedDays));
+          });
+        }
 
         daysEl.appendChild(dayEl);
       }
