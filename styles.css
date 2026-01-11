@@ -1,7 +1,13 @@
 @keyframes pulse {
-  0% { opacity: 0.5; }
-  50% { opacity: 1; }
-  100% { opacity: 0.5; }
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
 }
 
 html {
@@ -84,7 +90,7 @@ h1 {
 .month h3 {
   margin: 0;
   padding: 10px;
-  background-color: rgba(81, 13, 13, 0.3);
+  background-color: rgba(235, 227, 236, 0.3);
   border-radius: 20px;
   text-transform: capitalize;
 }
@@ -110,13 +116,15 @@ h1 {
   transition: background-color 0.3s;
 }
 .day.passed {
-  background-color: #ccc;
-  color: #666;
-  border: 1px solid rgba(81, 13, 13, 0.8);
+  background-color: rgba(206, 78, 78, 0.8);
+  color: rgb(135, 4, 4);
+  border: 1px solid rgba(163, 41, 41, 0.8);
 }
 .day.today {
-  background-color: #ffeb3b;
+  background-color: rgba(231, 45, 45, 0.8);
+  color: rgb(217, 164, 235);
   font-weight: bold;
+  animation: pulse 1s infinite;
 }
 .day.target {
   background-color: #4caf50;

@@ -2,10 +2,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const targetDate = new Date("2026-03-23T10:00:00"); // Target date
   const startDate = new Date();
   startDate.setHours(0, 0, 0, 0);
-  const now = new Date();
-  const totalSeconds = Math.floor((targetDate - now) / 1000);
 
-  let remainingSeconds = totalSeconds;
+  function normalizeDate(date) {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
   let interval;
 
   function updateCountdown() {
@@ -38,8 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const startLeft = 10;
     const endLeft = 50;
-    const startRight = 90;
-    const endRight = 50;
 
     image1.style.left = `${startLeft + (endLeft - startLeft) * progress}%`;
     image2.style.right = `${startLeft + (endLeft - startLeft) * progress}%`;
@@ -64,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
       line.style.width = `${x2 - x1}px`;
     }
   }
+
   function generateCalendar() {
     const calendarEl = document.getElementById("calendar");
     const months = [];
@@ -82,8 +84,8 @@ document.addEventListener("DOMContentLoaded", () => {
       current.setMonth(current.getMonth() + 1);
     }
 
-    // Load marked days from localStorage
     let markedDays = JSON.parse(localStorage.getItem("markedDays") || "[]");
+    const today = normalizeDate(new Date());
 
     months.forEach(({ year, month, name }) => {
       const monthEl = document.createElement("div");
@@ -93,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
       title.textContent = name;
       monthEl.appendChild(title);
 
-      const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const weekdays = ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"];
       const weekdaysEl = document.createElement("div");
       weekdaysEl.className = "weekdays";
       weekdays.forEach((day) => {
@@ -110,7 +112,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const lastDay = new Date(year, month + 1, 0);
       const startDayOfWeek = firstDay.getDay();
 
-      // Adjust lastDay if this is the target month
       let maxDay = lastDay.getDate();
       if (
         year === targetDate.getFullYear() &&
@@ -119,38 +120,43 @@ document.addEventListener("DOMContentLoaded", () => {
         maxDay = targetDate.getDate();
       }
 
-      // Empty cells for days before the first day
       for (let i = 0; i < startDayOfWeek; i++) {
         const emptyEl = document.createElement("div");
         emptyEl.className = "day empty";
         daysEl.appendChild(emptyEl);
       }
 
-      // Days of the month
       for (let day = 1; day <= maxDay; day++) {
         const dayEl = document.createElement("div");
         dayEl.className = "day";
         dayEl.textContent = day;
 
-        const currentDay = new Date(year, month, day);
+        const currentDay = normalizeDate(new Date(year, month, day));
         const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(
           day
         ).padStart(2, "0")}`;
 
-        // Add "passed" if marked
+        // Marcar automáticamente días pasados
+        if (currentDay < today) {
+          dayEl.classList.add("passed");
+          if (!markedDays.includes(dateStr)) {
+            markedDays.push(dateStr);
+          }
+        }
+
         if (markedDays.includes(dateStr)) {
           dayEl.classList.add("passed");
         }
 
-        // Add special classes
-        if (currentDay.toDateString() === now.toDateString()) {
+        if (currentDay.getTime() === today.getTime()) {
           dayEl.classList.add("today");
-        } else if (currentDay.toDateString() === targetDate.toDateString()) {
+        } else if (
+          currentDay.getTime() === normalizeDate(targetDate).getTime()
+        ) {
           dayEl.classList.add("target");
         }
 
-        // Only add click event if the day is between now and targetDate (inclusive)
-        if (currentDay >= now && currentDay <= targetDate) {
+        if (currentDay >= today && currentDay <= normalizeDate(targetDate)) {
           dayEl.addEventListener("click", () => {
             dayEl.classList.toggle("passed");
             if (dayEl.classList.contains("passed")) {
@@ -170,12 +176,11 @@ document.addEventListener("DOMContentLoaded", () => {
       monthEl.appendChild(daysEl);
       calendarEl.appendChild(monthEl);
     });
+
+    localStorage.setItem("markedDays", JSON.stringify(markedDays));
   }
 
-  // Initial call
   updateCountdown();
   generateCalendar();
-
-  // Update every second
   interval = setInterval(updateCountdown, 1000);
 });
