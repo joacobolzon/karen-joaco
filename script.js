@@ -148,11 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
           dayEl.classList.add("passed");
         }
 
-        if (currentDay.getTime() === today.getTime()) {
-          dayEl.classList.add("today");
-        } else if (
-          currentDay.getTime() === normalizeDate(targetDate).getTime()
-        ) {
+        if (currentDay.getTime() === normalizeDate(targetDate).getTime()) {
           dayEl.classList.add("target");
         }
 
