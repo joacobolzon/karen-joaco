@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const targetDate = new Date("2026-03-23T10:00:00"); // Target date
+  const targetDate = new Date("2026-03-23T16:00:00+01:00");
   const startDate = new Date();
   startDate.setHours(0, 0, 0, 0);
 
@@ -70,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const calendarEl = document.getElementById("calendar");
     const months = [];
     let current = new Date(startDate);
+    current.setDate(1);
 
     while (current <= targetDate) {
       const year = current.getFullYear();
@@ -133,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const currentDay = normalizeDate(new Date(year, month, day));
         const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(
-          day
+          day,
         ).padStart(2, "0")}`;
 
         // Marcar automáticamente días pasados
