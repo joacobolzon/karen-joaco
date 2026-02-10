@@ -1,14 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
   const targetDate = new Date("2026-03-23T16:00:00+01:00");
-  const relationshipStartDate = "2026-01-05T00:00:00+01:00";
+  const startDate = new Date();
+  startDate.setHours(0, 0, 0, 0);
 
   function normalizeDate(date) {
     const d = new Date(date);
     d.setHours(0, 0, 0, 0);
     return d;
   }
-
-  const startDate = normalizeDate(new Date(relationshipStartDate));
 
   let interval;
 
@@ -70,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function generateCalendar() {
     const calendarEl = document.getElementById("calendar");
     const months = [];
-    let current = new Date(normalizeDate(startDate));
+    let current = new Date(startDate);
     current.setDate(1);
 
     while (current <= targetDate) {
@@ -87,9 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let markedDays = JSON.parse(localStorage.getItem("markedDays") || "[]");
-    if (!Array.isArray(markedDays)) {
-      markedDays = [];
-    }
     const today = normalizeDate(new Date());
 
     months.forEach(({ year, month, name }) => {
@@ -141,6 +137,14 @@ document.addEventListener("DOMContentLoaded", () => {
           day,
         ).padStart(2, "0")}`;
 
+        // Marcar automáticamente días pasados
+        if (currentDay < today) {
+          dayEl.classList.add("passed");
+          if (!markedDays.includes(dateStr)) {
+            markedDays.push(dateStr);
+          }
+        }
+
         if (markedDays.includes(dateStr)) {
           dayEl.classList.add("passed");
         }
@@ -170,6 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
       calendarEl.appendChild(monthEl);
     });
 
+    localStorage.setItem("markedDays", JSON.stringify(markedDays));
   }
 
   updateCountdown();
