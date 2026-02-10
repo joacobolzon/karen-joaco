@@ -87,6 +87,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let markedDays = JSON.parse(localStorage.getItem("markedDays") || "[]");
+    if (!Array.isArray(markedDays)) {
+      markedDays = [];
+    }
     const today = normalizeDate(new Date());
 
     months.forEach(({ year, month, name }) => {
@@ -138,14 +141,6 @@ document.addEventListener("DOMContentLoaded", () => {
           day,
         ).padStart(2, "0")}`;
 
-        // Marcar automáticamente días pasados
-        if (currentDay < today) {
-          dayEl.classList.add("passed");
-          if (!markedDays.includes(dateStr)) {
-            markedDays.push(dateStr);
-          }
-        }
-
         if (markedDays.includes(dateStr)) {
           dayEl.classList.add("passed");
         }
@@ -175,7 +170,6 @@ document.addEventListener("DOMContentLoaded", () => {
       calendarEl.appendChild(monthEl);
     });
 
-    localStorage.setItem("markedDays", JSON.stringify(markedDays));
   }
 
   updateCountdown();
