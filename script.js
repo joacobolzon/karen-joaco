@@ -1,13 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
   const targetDate = new Date("2026-03-23T16:00:00+01:00");
-  const startDate = new Date();
-  startDate.setHours(0, 0, 0, 0);
+  const relationshipStartDate = "2024-01-01T00:00:00+01:00";
 
   function normalizeDate(date) {
     const d = new Date(date);
     d.setHours(0, 0, 0, 0);
     return d;
   }
+
+  const startDate = normalizeDate(new Date(relationshipStartDate));
 
   let interval;
 
@@ -69,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function generateCalendar() {
     const calendarEl = document.getElementById("calendar");
     const months = [];
-    let current = new Date(startDate);
+    let current = new Date(normalizeDate(startDate));
     current.setDate(1);
 
     while (current <= targetDate) {
