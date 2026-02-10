@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const targetDate = new Date("2026-03-23T16:00:00+01:00");
-  const relationshipStartDate = "2024-01-01T00:00:00+01:00";
+  const relationshipStartDate = "2026-01-05T00:00:00+01:00";
 
   function normalizeDate(date) {
     const d = new Date(date);
