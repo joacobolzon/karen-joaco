@@ -69,7 +69,10 @@ document.addEventListener("DOMContentLoaded", () => {
   function generateCalendar() {
     const calendarEl = document.getElementById("calendar");
     const months = [];
-    let current = new Date(startDate);
+    const calendarStartDate = new Date("2026-01-05T00:00:00+01:00");
+calendarStartDate.setHours(0, 0, 0, 0);
+
+let current = new Date(calendarStartDate);
     current.setDate(1);
 
     while (current <= targetDate) {
