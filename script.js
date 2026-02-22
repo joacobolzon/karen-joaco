@@ -70,9 +70,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const calendarEl = document.getElementById("calendar");
     const months = [];
     const calendarStartDate = new Date("2026-01-05T00:00:00+01:00");
-calendarStartDate.setHours(0, 0, 0, 0);
+    calendarStartDate.setHours(0, 0, 0, 0);
 
-let current = new Date(calendarStartDate);
+    let current = new Date(calendarStartDate);
     current.setDate(1);
 
     while (current <= targetDate) {
@@ -88,7 +88,12 @@ let current = new Date(calendarStartDate);
       current.setMonth(current.getMonth() + 1);
     }
 
+    // ✅ Primera carga real = todavía no existe la key en localStorage
+    const isFirstLoad = localStorage.getItem("markedDays") === null;
+
+    // Cargamos lo guardado (si no hay nada, arranca vacío)
     let markedDays = JSON.parse(localStorage.getItem("markedDays") || "[]");
+
     const today = normalizeDate(new Date());
 
     months.forEach(({ year, month, name }) => {
@@ -117,10 +122,7 @@ let current = new Date(calendarStartDate);
       const startDayOfWeek = firstDay.getDay();
 
       let maxDay = lastDay.getDate();
-      if (
-        year === targetDate.getFullYear() &&
-        month === targetDate.getMonth()
-      ) {
+      if (year === targetDate.getFullYear() && month === targetDate.getMonth()) {
         maxDay = targetDate.getDate();
       }
 
@@ -137,17 +139,15 @@ let current = new Date(calendarStartDate);
 
         const currentDay = normalizeDate(new Date(year, month, day));
         const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(
-          day,
+          day
         ).padStart(2, "0")}`;
 
-        // Marcar automáticamente días pasados
-        if (currentDay < today) {
-          dayEl.classList.add("passed");
-          if (!markedDays.includes(dateStr)) {
-            markedDays.push(dateStr);
-          }
+        // ✅ Marcar automáticamente días pasados SOLO la primera vez
+        if (isFirstLoad && currentDay < today) {
+          if (!markedDays.includes(dateStr)) markedDays.push(dateStr);
         }
 
+        // Pintar según lo que haya en markedDays (ya sea auto en 1ra carga o guardado por clicks)
         if (markedDays.includes(dateStr)) {
           dayEl.classList.add("passed");
         }
@@ -160,9 +160,7 @@ let current = new Date(calendarStartDate);
           dayEl.addEventListener("click", () => {
             dayEl.classList.toggle("passed");
             if (dayEl.classList.contains("passed")) {
-              if (!markedDays.includes(dateStr)) {
-                markedDays.push(dateStr);
-              }
+              if (!markedDays.includes(dateStr)) markedDays.push(dateStr);
             } else {
               markedDays = markedDays.filter((d) => d !== dateStr);
             }
@@ -177,6 +175,8 @@ let current = new Date(calendarStartDate);
       calendarEl.appendChild(monthEl);
     });
 
+    // ✅ Guardar al final: si fue primera carga, ya queda “congelado” el estado base;
+    // si no lo fue, no se agregaron días automáticamente.
     localStorage.setItem("markedDays", JSON.stringify(markedDays));
   }
 
