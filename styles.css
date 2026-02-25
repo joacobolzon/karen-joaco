@@ -16,7 +16,8 @@ html {
   --c2: #d5f4fb;
 
   --_g: 80%, var(--c1) 25.4%, #0000 26%;
-  background: radial-gradient(at 80% var(--_g)),
+  background:
+    radial-gradient(at 80% var(--_g)),
     radial-gradient(at 20% var(--_g)),
     conic-gradient(from -45deg at 50% 41%, var(--c1) 90deg, var(--c2) 0)
       calc(var(--s) / 2) 0;
@@ -157,11 +158,19 @@ h1 {
   }
 
   .container {
-    height: 60vh;
+    height: 45vh;
   }
 
+  /* 🔥 Imágenes MUCHO más pequeñas en celular */
   .image {
-    width: 70px;
+    width: 45px !important;
+    max-width: 60px !important;
+  }
+
+  /* 🔥 Limitar el crecimiento cuando el JS cambia width */
+  #image1,
+  #image2 {
+    max-width: 70px !important;
   }
 
   .month h3 {
@@ -178,7 +187,6 @@ h1 {
     font-size: 0.7rem;
   }
 }
-
 @media (max-width: 768px) {
   .calendar {
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
