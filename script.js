@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const targetDate = new Date("2026-03-23T16:00:00+01:00");
-  const startDate = new Date();
+  // ✅ FECHA DE INICIO FIJA (igual que el calendario)
+  const startDate = new Date("2026-01-05T00:00:00+01:00");
   startDate.setHours(0, 0, 0, 0);
 
   function normalizeDate(date) {
@@ -37,7 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
     countdownEl.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 
     const totalSeconds = Math.floor((targetDate - startDate) / 1000);
-    const progress = 1 - remainingSeconds / totalSeconds;
+    let progress = 1 - remainingSeconds / totalSeconds;
+    progress = Math.max(0, Math.min(1, progress));
 
     const startLeft = 10;
     const endLeft = 50;
@@ -122,7 +124,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const startDayOfWeek = firstDay.getDay();
 
       let maxDay = lastDay.getDate();
-      if (year === targetDate.getFullYear() && month === targetDate.getMonth()) {
+      if (
+        year === targetDate.getFullYear() &&
+        month === targetDate.getMonth()
+      ) {
         maxDay = targetDate.getDate();
       }
 
@@ -139,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const currentDay = normalizeDate(new Date(year, month, day));
         const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(
-          day
+          day,
         ).padStart(2, "0")}`;
 
         // ✅ Marcar automáticamente días pasados SOLO la primera vez
@@ -156,8 +161,21 @@ document.addEventListener("DOMContentLoaded", () => {
           dayEl.classList.add("target");
         }
 
-        if (currentDay >= today && currentDay <= normalizeDate(targetDate)) {
+        const targetDay = normalizeDate(targetDate);
+
+        if (currentDay <= targetDay) {
           dayEl.addEventListener("click", () => {
+            // ✅ PASADO: permitir marcar, pero NO desmarcar
+            if (currentDay < today) {
+              if (!dayEl.classList.contains("passed")) {
+                dayEl.classList.add("passed");
+                if (!markedDays.includes(dateStr)) markedDays.push(dateStr);
+                localStorage.setItem("markedDays", JSON.stringify(markedDays));
+              }
+              return; // importante: bloquea el "toggle" en pasado
+            }
+
+            // ✅ HOY y FUTURO (hasta target): toggle normal
             dayEl.classList.toggle("passed");
             if (dayEl.classList.contains("passed")) {
               if (!markedDays.includes(dateStr)) markedDays.push(dateStr);
