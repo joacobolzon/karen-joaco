@@ -165,7 +165,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (currentDay <= targetDay) {
           dayEl.addEventListener("click", () => {
-            if (currentDay.getTime() === targetDay.getTime()) return;
             // ✅ PASADO: permitir marcar, pero NO desmarcar
             if (currentDay < today) {
               if (!dayEl.classList.contains("passed")) {
