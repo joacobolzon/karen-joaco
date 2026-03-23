@@ -128,7 +128,7 @@ h1 {
   animation: pulse 1s infinite;
 }
 .day.target {
-  background-color: #fff;
+  background-color: transparent;
   color: black;
 }
 .day.empty {
